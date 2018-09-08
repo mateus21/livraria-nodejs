@@ -1,5 +1,4 @@
 var app = require('./config/express')();
-var productsRoute = require('./app/routes/products')(app);
 
 
 app.get('/', function(req, res) {
