@@ -31,7 +31,15 @@ module.exports = function (app) {
 
     app.post('/produtos', function(req, res) {
         var product = req.body;
-        console.log(product);
+        
+        var validatorTitulo = req.assert('titulo','Titulo é obrigatório');
+        validatorTitulo.notEmpty();
+        var erros = req.validationErrors();
+
+        if(erros){
+            res.render('produtos/form');
+            return;
+        }
         
         var connection = app.infra.connectionFactory();
         var productsDAO = new app.infra.ProductsDAO(connection);
