@@ -26,18 +26,18 @@ module.exports = function (app) {
     });
 
     app.get('/produtos/form', function(req, res) {
-        res.render('produtos/form');
+        res.render('produtos/form', {errosValidacao:{}});
     });
 
     app.post('/produtos', function(req, res) {
         var product = req.body;
         
-        var validatorTitulo = req.assert('titulo','Titulo é obrigatório');
-        validatorTitulo.notEmpty();
+        req.assert('titulo','Titulo é obrigatório').notEmpty();
+        req.assert('preco','Formato inválido').isFloat();
         var erros = req.validationErrors();
 
         if(erros){
-            res.render('produtos/form');
+            res.render('produtos/form', {errosValidacao: erros});
             return;
         }
         
@@ -45,7 +45,7 @@ module.exports = function (app) {
         var productsDAO = new app.infra.ProductsDAO(connection);
 
         productsDAO.save(product, function(err, results) {
-            res.redirect('/produtos');
+            res.redirect('/produtos', {errosValidacao: erros});
         });
 
     });
